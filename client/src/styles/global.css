@@ -1,0 +1,77 @@
+/* global.css: colors, fonts and basic rules used by every page */
+
+/* ---------- the color palette (change these and the whole site changes) ---------- */
+:root {
+  --sky: #4fb4ea;        /* main sky blue, the color of the water */
+  --sky-bright: #7cc9f2; /* lighter sky blue */
+  --sky-pale: #d8effc;   /* very light blue for backgrounds and borders */
+  --mist: #eef8fd;       /* almost white with a blue tint */
+  --ocean: #0b4a75;      /* darker blue for icons and hover states */
+  --deep: #072f4d;       /* deepest blue for text and big buttons */
+  --navy: #0b2a5c;       /* navy blue, used for the fine print */
+  --foam: #ffffff;       /* white, like sea foam */
+  --sand: #ecd9ad;       /* beach sand */
+  --sand-light: #f7eed7; /* lighter sand */
+  --sand-dark: #c9a96b;  /* darker sand for small accents */
+  --coral: #ef6f5e;      /* tiny pops of color (crabs, flags) */
+  --sun: #f6c84c;        /* tiny pops of yellow (beach balls) */
+  --paper: #f7f1e3;      /* warm paper color for the field guide page */
+  --ink: #0a2a40;        /* normal text color */
+  --muted: #3e5f78;      /* softer text color */
+
+  /* fonts */
+  --font-title: 'Yellowtail', 'Brush Script MT', cursive;       /* the retro surf-shop script: the landing title + the field guide prompt heading */
+  --font-weight-title: 400;                                      /* yellowtail has just one weight (a fake bold looks smudgy) */
+  --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;        /* friendly, legible titles, buttons and numbers everywhere else */
+  --display-weight: 700;
+  --font-note: 'Caveat Brush', 'Comic Sans MS', cursive;         /* bold handwriting (landing + checker) */
+  --font-hand: 'Gochi Hand', 'Comic Sans MS', cursive;          /* handwriting on the field guide page */
+  --font-body: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Fraunces', Georgia, serif;                      /* field guide headings */
+}
+
+/* ---------- reset: remove the browser's default spacing ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--sand-light);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { line-height: 1.1; }
+a { color: inherit; }
+button { font: inherit; }
+
+/* a clear outline when you move around with the keyboard */
+:focus-visible { outline: 3px solid var(--ocean); outline-offset: 3px; }
+
+/* ---------- lenis smooth scroll needs these few rules ---------- */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* ---------- people who turned off animations in their settings ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------- shared bits used on more than one page ---------- */
+/* poppy handwriting text */
+.hand { font-family: var(--font-hand); font-weight: 400; margin: 0; }
+
+/* the canvas ocean fills whatever box it is placed in (landing, story and checker all use it) */
+.ocean-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* the extra padding around a magnet button gives the mouse effect more room to react in */
+.magnet { display: inline-block; padding: 1.6rem 2rem; }
+
+/* one word of the scroll-reveal text */
+.sr-word { display: inline-block; }

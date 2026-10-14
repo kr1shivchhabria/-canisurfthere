@@ -1,0 +1,7 @@
+# things git should not track
+node_modules/
+client/node_modules/
+client/dist/
+.env
+.DS_Store
+*.log

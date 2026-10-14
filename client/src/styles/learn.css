@@ -1,0 +1,257 @@
+/* learn.css: the surf field guide page.
+   the look: warm paper, navy ink, a serif font, hard offset shadows (like a printed zine) */
+
+.learn { background: var(--paper); color: var(--navy); overflow-x: clip; }
+.learn h1, .learn h2, .learn h3 { font-family: var(--font-serif); }
+
+/* things that rise into view start hidden. scrolltrigger fades them in (see learn.jsx) */
+.reveal { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; } }
+
+/* ---- reading progress bar ---- */
+.learn-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, var(--sky), var(--coral));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+/* ====================== hero with vanta clouds ====================== */
+.learn-hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  background: linear-gradient(180deg, #4fb4ea 0%, #bfe6f8 100%); /* shows if vanta can not load */
+}
+.vanta-clouds { position: absolute; inset: 0; }
+
+.learn-nav {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.4rem 5vw;
+}
+.learn-back, .learn-nav-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--navy);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--navy);
+  font-weight: 800;
+  text-decoration: none;
+}
+.learn-back:hover, .learn-nav-check:hover { background: #fff; }
+
+.learn-hero-text { position: relative; z-index: 2; padding: 0 5vw; }
+.learn-by { color: var(--navy); font-size: clamp(1.3rem, 2.4vw, 1.8rem); transform: rotate(-2deg); display: inline-block; }
+.learn-hero h1 {
+  margin: 0.4rem 0 1.4rem;
+  font-size: clamp(3.6rem, 12vw, 11rem);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  color: var(--navy);
+}
+.learn-hero h1 em { font-weight: 300; font-style: italic; color: #fff; text-shadow: 0 4px 0 var(--navy); }
+.learn-sub { max-width: 28em; margin: 0; font-size: clamp(1.2rem, 2.4vw, 1.8rem); font-weight: 800; line-height: 1.35; color: var(--navy); }
+.learn-cue { position: relative; z-index: 2; margin: 0; padding: 0 0 2rem; text-align: center; font-size: 1.5rem; color: var(--navy); animation: learnHop 1.6s ease-in-out infinite; }
+@keyframes learnHop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+
+/* ====================== marquee strip ====================== */
+.marquee { overflow: hidden; background: var(--navy); color: var(--sand); padding: 1rem 0; border-block: 4px solid var(--sky); }
+.marquee-track { display: flex; width: max-content; will-change: transform; }
+.marquee-item { padding: 0 1.4rem; font-family: var(--font-serif); font-style: italic; font-size: clamp(1.3rem, 2.4vw, 1.9rem); white-space: nowrap; }
+.marquee-dot { margin-left: 2.8rem; color: var(--sky); font-style: normal; }
+
+/* ====================== body: table of contents + chapters ====================== */
+.learn-body {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 4rem;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 4rem 5vw 6rem;
+}
+
+/* the table of contents follows you down the page */
+.rail { position: sticky; top: 2rem; align-self: start; }
+.rail-title { margin: 0 0 0.8rem; font-family: var(--font-hand); font-size: 1.5rem; color: var(--coral); }
+.rail ol { margin: 0; padding: 0; list-style: none; }
+.rail a {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.98rem;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+.rail a span { font-family: var(--font-serif); font-style: italic; font-size: 0.85rem; opacity: 0.7; }
+.rail a:hover { color: var(--navy); }
+.rail a.active { background: var(--sky); color: var(--deep); font-weight: 800; transform: translateX(6px); }
+
+/* ====================== a chapter ====================== */
+.chapter { padding: 4.5rem 0 3.5rem; border-top: 3px solid var(--navy); scroll-margin-top: 1rem; }
+.chapter:first-child { border-top: none; padding-top: 0; }
+
+.section-head { position: relative; display: flex; align-items: flex-end; gap: 1.2rem; margin-bottom: 1.6rem; }
+/* the giant outlined number */
+.chapter-num {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 900;
+  font-size: clamp(5.5rem, 13vw, 10.5rem);
+  line-height: 0.8;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--sky);
+  user-select: none;
+}
+.chapter-note { margin: 0 0 0.3rem; font-family: var(--font-hand); font-size: clamp(1.3rem, 2.4vw, 1.7rem); color: var(--coral); transform: rotate(-2deg); transform-origin: left; }
+.chapter-title { margin: 0; font-size: clamp(2rem, 4.6vw, 3.4rem); font-weight: 800; letter-spacing: -0.02em; }
+
+.chapter-intro { max-width: 40em; margin: 0 0 2rem; font-size: clamp(1.15rem, 2vw, 1.4rem); font-weight: 600; line-height: 1.55; }
+
+/* the highlighter pen. the yellow-blue band slides in from the left when ".in" is added */
+.marker {
+  color: inherit;
+  background: linear-gradient(transparent 55%, rgba(79, 180, 234, 0.55) 55%) no-repeat 0 0 / 0% 100%;
+  transition: background-size 0.9s ease-out 0.2s;
+}
+.marker.in { background-size: 100% 100%; }
+
+/* ---- diagrams ---- */
+.diagram { margin: 0 0 2.2rem; padding: 1rem; border: 3px solid var(--navy); border-radius: 26px; background: #fffaf0; box-shadow: 8px 8px 0 var(--sand); }
+.diagram-svg { display: block; width: 100%; height: auto; }
+.diagram-hand { font-family: var(--font-hand); font-size: 22px; }
+.draw { stroke-dasharray: 1; stroke-dashoffset: 0; }
+
+/* ---- point cards ---- */
+.points { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.4rem; margin-bottom: 1.8rem; }
+.point {
+  padding: 1.3rem 1.4rem 1.4rem;
+  border: 3px solid var(--navy);
+  border-radius: 8px 26px 8px 26px; /* two sharp corners and two round ones */
+  background: #fffaf0;
+  box-shadow: 6px 6px 0 var(--sand-dark);
+}
+.point h3 { margin: 0 0 0.4rem; font-size: 1.45rem; font-weight: 800; }
+.point p { margin: 0; line-height: 1.55; }
+
+/* ---- the wetsuit table ---- */
+.wetsuit-table { width: 100%; margin-bottom: 1.8rem; border-collapse: separate; border-spacing: 0; border: 3px solid var(--navy); border-radius: 18px; overflow: hidden; background: #fffaf0; }
+.wetsuit-table th { padding: 0.8rem 1rem; background: var(--navy); color: var(--sand); text-align: left; font-family: var(--font-serif); font-style: italic; }
+.wetsuit-table td { padding: 0.75rem 1rem; border-top: 2px solid rgba(11, 42, 92, 0.15); font-weight: 600; }
+.wetsuit-table tr:nth-child(even) td { background: rgba(79, 180, 234, 0.12); }
+
+/* ---- the "how the meter treats it" note ---- */
+.meter-note { padding: 1.1rem 1.4rem; border: 3px solid var(--navy); border-radius: 18px; background: var(--sky); color: var(--deep); }
+.meter-note-label { display: block; margin-bottom: 0.2rem; font-family: var(--font-hand); font-size: 1.4rem; }
+.meter-note p { margin: 0; font-weight: 700; }
+
+/* ---- la jolla cards ---- */
+.local-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.4rem; }
+.local-card { padding: 1.5rem; border: 3px solid var(--navy); border-radius: 26px 8px 26px 8px; background: #fffaf0; box-shadow: 6px 6px 0 var(--sky); }
+.local-card::before { background: radial-gradient(380px circle at var(--x, 50%) var(--y, 50%), rgba(246, 200, 76, 0.4), transparent 60%); }
+.local-type { display: inline-block; padding: 0.15rem 0.7rem; border-radius: 999px; background: var(--navy); color: var(--sand); font-size: 0.82rem; font-weight: 800; }
+.local-card h3 { margin: 0.7rem 0 0.4rem; font-size: 1.6rem; }
+.local-card p { margin: 0; }
+.small-print { margin-top: 1.2rem; font-size: 0.9rem; color: var(--muted); }
+
+/* ---- beach flags ---- */
+.flag-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; }
+.flag-card { display: flex; gap: 1.1rem; align-items: center; padding: 1.1rem 1.3rem; border: 3px solid var(--navy); border-radius: 20px; background: #fffaf0; }
+.flag-card h3 { margin: 0 0 0.2rem; font-size: 1.25rem; }
+.flag-card p { margin: 0; font-size: 0.98rem; }
+.flag-art { position: relative; flex: none; width: 70px; height: 74px; }
+.flag-pole { position: absolute; left: 8px; top: 0; bottom: 0; width: 5px; border-radius: 3px; background: var(--navy); }
+/* the cloth is a rectangle with a v-shaped notch cut into the end (clip-path) */
+.flag-cloth { position: absolute; left: 13px; top: 4px; width: 50px; height: 30px; border: 2px solid var(--navy); clip-path: polygon(0 0, 100% 0, 82% 50%, 100% 100%, 0 100%); animation: wave 1.6s ease-in-out infinite; transform-origin: left center; }
+.flag-cloth.second { top: 38px; animation-delay: -0.5s; }
+.flag-cloth.checker { background: repeating-conic-gradient(var(--navy) 0 25%, #fff 0 50%) 0 0 / 14px 14px; }
+@keyframes wave { 0%, 100% { transform: skewY(0deg); } 50% { transform: skewY(-6deg) scaleX(0.94); } }
+
+/* ---- dos and don'ts ---- */
+.rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.rules-title { margin: 0 0 1rem; font-size: clamp(2.4rem, 5vw, 3.6rem); font-style: italic; font-weight: 900; }
+.dos-title { color: #1f7a4a; }
+.donts-title { color: var(--coral); }
+.rule { display: flex; gap: 0.8rem; align-items: flex-start; margin-bottom: 0.9rem; padding: 0.9rem 1.1rem; border: 3px solid var(--navy); border-radius: 16px; will-change: transform; }
+.rule p { margin: 0; font-weight: 700; line-height: 1.4; }
+.rule-icon { flex: none; margin-top: 2px; padding: 3px; border-radius: 50%; color: #fff; box-sizing: content-box; }
+.rule.do { background: #e4f5ea; box-shadow: 5px 5px 0 #8fd2a8; }
+.rule.do .rule-icon { background: #1f7a4a; }
+.rule.dont { background: #ffe9e4; box-shadow: 5px 5px 0 #f3a89a; }
+.rule.dont .rule-icon { background: var(--coral); }
+
+/* ---- the checklist ---- */
+.checklist { padding: 1.6rem; border: 3px solid var(--navy); border-radius: 26px; background: #fffaf0; box-shadow: 8px 8px 0 var(--sand); }
+.checklist-count { margin: 0 0 0.6rem; font-weight: 800; }
+.checklist-big { font-family: var(--font-serif); font-size: 3rem; font-style: italic; font-weight: 900; color: var(--sky); }
+.checklist-bar { height: 12px; margin-bottom: 1.2rem; border: 2px solid var(--navy); border-radius: 99px; background: #fff; overflow: hidden; }
+.checklist-bar div { height: 100%; background: linear-gradient(90deg, var(--sky), #2fb457); transition: width 0.4s ease; }
+.checklist ul { margin: 0; padding: 0; list-style: none; }
+.checklist button { display: flex; align-items: center; gap: 0.9rem; width: 100%; padding: 0.65rem 0.4rem; border: none; border-radius: 12px; background: none; color: var(--navy); font-weight: 700; text-align: left; cursor: pointer; }
+.checklist button:hover { background: rgba(79, 180, 234, 0.15); }
+.checklist .box { display: grid; place-items: center; flex: none; width: 28px; height: 28px; border: 3px solid var(--navy); border-radius: 8px; background: #fff; color: #fff; transition: background 0.2s, transform 0.2s; }
+.checklist button.on .box { background: #2fb457; transform: rotate(-6deg) scale(1.08); }
+.checklist button.on { text-decoration: line-through; text-decoration-color: rgba(11, 42, 92, 0.4); }
+.checklist-done { margin: 1rem 0 0; font-family: var(--font-hand); font-size: 1.7rem; color: #1f7a4a; opacity: 0; transform: translateY(8px); transition: opacity 0.4s, transform 0.4s; }
+.checklist-done.show { opacity: 1; transform: none; }
+
+/* ---- emergency steps ---- */
+.emergency { margin: 0; padding: 0; list-style: none; counter-reset: none; }
+.emergency li { display: flex; gap: 1.2rem; align-items: flex-start; margin-bottom: 1rem; padding: 1.2rem 1.4rem; border-radius: 20px; background: var(--navy); color: #fff; }
+.emergency-num { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--sand); color: var(--navy); font-family: var(--font-serif); font-style: italic; font-weight: 900; font-size: 1.7rem; }
+.emergency h3 { margin: 0 0 0.2rem; font-size: 1.35rem; color: var(--sand); }
+.emergency p { margin: 0; }
+
+/* ====================== final call to action + footer ====================== */
+.learn-final { padding: 7rem 6vw; text-align: center; background: linear-gradient(180deg, var(--paper) 0%, #9ed7f4 100%); }
+.learn-final .hand { color: var(--coral); font-size: clamp(1.4rem, 2.6vw, 2rem); transform: rotate(-2deg); display: inline-block; }
+.learn-final h2 { max-width: 14ch; margin: 0.4rem auto 2rem; font-size: clamp(2.6rem, 7vw, 5.4rem); font-weight: 800; letter-spacing: -0.02em; }
+.final-button {
+  display: inline-block;
+  padding: 0.5em 1.1em 0.55em;
+  border: 3px solid var(--navy);
+  border-radius: 999px;
+  background: var(--navy);
+  color: var(--sand);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 800;
+  font-size: clamp(1.5rem, 3.6vw, 2.5rem);
+  text-decoration: none;
+  box-shadow: 6px 6px 0 var(--sky);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.final-button:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--sky); }
+.final-button:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0 var(--sky); }
+
+.learn-footer { padding: 1.8rem 6vw 2.2rem; background: #9ed7f4; color: var(--navy); text-align: center; font-size: 0.9rem; }
+.learn-footer p { max-width: 52rem; margin: 0.4rem auto; }
+.learn-fine { font-size: 0.8rem; }
+
+/* ====================== phones and small screens ====================== */
+@media (max-width: 900px) {
+  .learn-body { grid-template-columns: 1fr; gap: 0; }
+  .rail { display: none; } /* no room for a table of contents on small screens */
+  .rules-grid { grid-template-columns: 1fr; }
+  .section-head { flex-direction: column; align-items: flex-start; gap: 0.2rem; }
+}

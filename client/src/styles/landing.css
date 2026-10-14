@@ -1,0 +1,757 @@
+/* landing.css: everything on the landing page.
+   the page is one continuous beach: long ocean -> shoreline -> long sand (button, story)
+   -> a patch of ocean with the field guide prompt -> sand again for the fine print. */
+
+.landing {
+  overflow-x: clip;
+  /* the sand grain texture (an svg noise filter). defined once, used by every sand section */
+  --sand-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .4 0 0 0 0 .18 0 0 0 .7 -.22'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --sand-flat: #f1e1b8; /* the plain sand color the textured sections all share */
+  --deep-water: #0a5b95; /* the color the field guide ocean deepens into */
+}
+
+/* on the landing page the handwriting font is the bolder, easier to read one */
+.landing .hand { font-family: var(--font-note); }
+
+/* ====================== the scene (ocean + sand) ====================== */
+.scene { position: relative; overflow: hidden; }
+
+/* the sand sits behind everything. it starts under the water, so the shoreline sits on top of it */
+.sand-bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 115vh;
+  top: 115svh;
+  bottom: 0;
+  background:
+    var(--sand-noise),
+    /* soft light patches so the sand is not one flat color */
+    radial-gradient(ellipse at 20% 30%, rgba(255, 246, 220, 0.7), transparent 55%),
+    radial-gradient(ellipse at 80% 55%, rgba(255, 246, 220, 0.55), transparent 50%),
+    /* damp sand right at the shoreline, drying out to the plain sand color */
+    linear-gradient(180deg, #d4b57a 0%, #d4b57a 13%, #e8d3a2 28%, var(--sand-flat) 45%, var(--sand-flat) 100%);
+}
+
+/* the ocean canvas is taller than the ocean part, so the shoreline spills over onto the sand */
+.ocean-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 160vh;
+  height: 160svh;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ====================== the long ocean: title and subtitle ====================== */
+.hero {
+  position: relative;
+  z-index: 2;
+  height: 135vh;
+  height: 135svh; /* long. the water goes on for a while before the beach */
+}
+
+/* the title sits in the first screen of ocean */
+.hero-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4.5svh 4vw 15.5svh; /* more room below (for the scroll hint) than above, so the whole block sits a little higher */
+  text-align: center;
+}
+
+/* the little handwritten line above the title */
+.hero-tag {
+  margin: 0 0 clamp(1.5rem, 4.2svh, 2.6rem); /* breathing room between this line and the title (a bit less on short screens) */
+  font-family: var(--font-note);
+  font-size: clamp(1.5rem, 2.8vw, 2.3rem);
+  color: var(--sand);
+  transform: rotate(-2deg);
+  text-shadow: 0 2px 10px rgba(5, 40, 75, 0.7);
+}
+
+
+/* the title: a big retro surf-shop script in white, tilted a little, with just a faint soft glow and wide spacing. two lines. */
+.hero-title {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.05em 0.34em; /* room between the two lines, and between the words */
+  max-width: 96vw;
+  margin: 0;
+  font-family: var(--font-title);
+  font-weight: var(--font-weight-title);
+  font-size: clamp(4.4rem, min(16vw, 25svh), 16rem); /* massive, but never taller than the screen */
+  line-height: 1.04;
+  letter-spacing: 0.07em; /* the letters get room to breathe */
+  color: #fff;
+  transform: rotate(-4deg);
+  /* only a faint aqua glow, plus a soft dark shadow so the white letters stay readable on the water */
+  text-shadow: 0 0 0.16em rgba(110, 215, 255, 0.35), 0 0.03em 0.35em rgba(3, 28, 56, 0.5);
+}
+.title-break { flex-basis: 100%; height: 0; } /* pushes the last word onto its own line */
+.split-word { position: relative; display: inline-flex; white-space: nowrap; }
+.split-word.emphasized { color: #c4f7ff; } /* "surf": a lighter aqua */
+.split-piece { display: inline-block; }
+
+/* a thin wavy underline under "surf" (it draws itself from left to right) */
+.split-word.underlined::after {
+  content: '';
+  position: absolute;
+  left: 0.03em;
+  right: 0.12em;
+  bottom: 0.02em;
+  height: 0.09em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 12'%3E%3Cpath d='M0 6 Q10 0 20 6 T40 6' fill='none' stroke='%23c4f7ff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x center / 0.5em 100%;
+  filter: drop-shadow(0 0.02em 0.04em rgba(3, 28, 56, 0.5));
+  transform-origin: left;
+  animation: drawLine 1s ease-out 2s both;
+}
+@keyframes drawLine { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* on short browser windows (under 700px tall) the title is a little smaller, so the tagline, title, card and scroll hint
+   all still fit on the first screen with room around them (nothing touching the top or bottom edge) */
+@media (max-height: 700px) {
+  .hero-title { font-size: clamp(3.8rem, min(16vw, 22.5svh), 16rem); }
+}
+
+.hero-sub {
+  max-width: 92vw;
+  margin: clamp(1.9rem, 5.2svh, 3.1rem) 0 0; /* pushed a little further below the title (a bit less on short screens) */
+  padding: 0.6rem 1.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  border-radius: 26px;
+  background: rgba(5, 40, 75, 0.38); /* a frosted glass pill so the words read cleanly on the water */
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  font-size: clamp(0.95rem, 1.6vw, 1.4rem); /* a little smaller than before */
+  font-weight: 700;
+  line-height: 1.35;
+  text-wrap: balance;
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(5, 40, 75, 0.55);
+}
+/* on a normal computer screen the whole card is one line. (a phone is too narrow for that, so it wraps there) */
+@media (min-width: 900px) {
+  .hero-sub { white-space: nowrap; border-radius: 999px; }
+}
+
+.hero-scroll {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 90vh;
+  top: 90svh; /* still on the first screen, with room below it so it does not touch the bottom edge */
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-note);
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(5, 40, 75, 0.7);
+  animation: hop 1.8s ease-in-out infinite;
+}
+@keyframes hop {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(10px); }
+}
+
+/* seagulls: each one glides across the screen at its own height and speed */
+.gull { position: absolute; left: -80px; width: 46px; opacity: 0.9; animation: glide 26s linear infinite; }
+.gull-1 { top: 9%; }
+.gull-2 { top: 17%; width: 34px; animation-duration: 34s; animation-delay: -12s; }
+.gull-3 { top: 6%; width: 28px; animation-duration: 42s; animation-delay: -28s; }
+@keyframes glide {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(28vw, -14px); }
+  50% { transform: translate(60vw, 8px); }
+  75% { transform: translate(90vw, -10px); }
+  100% { transform: translate(calc(100vw + 120px), 0); }
+}
+
+/* ====================== the long sand ====================== */
+.cta { position: relative; z-index: 2; }
+
+/* the first screen of sand holds the button and the decorations around it */
+.cta-stage { position: relative; height: 100vh; height: 100svh; }
+/* the extra sand underneath */
+.cta-tail { position: relative; height: 30vh; height: 30svh; } /* a little shorter, so the gap before the story is smaller */
+
+.cta-center {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 18svh 4vw 10svh; /* the extra top padding keeps everything below the shoreline */
+  text-align: center;
+}
+
+.cta-intro {
+  margin: 0;
+  font-family: var(--font-note);
+  font-size: clamp(1.2rem, 2.1vw, 1.65rem);
+  color: var(--navy);
+  transform: rotate(-2deg);
+}
+
+/* ---- the big button: a chunky sky blue sticker (a little smaller than before) ---- */
+.cta-button {
+  position: relative;
+  display: inline-block;
+  padding: 0.3em 0.7em 0.36em;
+  border: 0.07em solid var(--deep);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #6fcaf3 0%, #3aa6e6 55%, #2290d6 100%);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-size: clamp(2rem, 5.2vw, 4.9rem);
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  text-shadow: 0 0.05em 0 rgba(7, 47, 77, 0.55);
+  max-width: 92vw; /* on a phone the words wrap onto two lines */
+  /* hard bottom edge (looks pressable) + soft shadow + a bright rim on the inside */
+  box-shadow:
+    0 0.1em 0 var(--deep),
+    0 0.2em 0 rgba(7, 47, 77, 0.35),
+    0 1.4rem 2.4rem rgba(7, 47, 77, 0.28),
+    inset 0 0.05em 0 rgba(255, 255, 255, 0.6);
+  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+}
+.cta-button:hover { filter: brightness(1.08) saturate(1.1); }
+.cta-button:active {
+  transform: translateY(0.08em);
+  box-shadow: 0 0.02em 0 var(--deep), 0 0.8rem 1.6rem rgba(7, 47, 77, 0.3), inset 0 0.05em 0 rgba(255, 255, 255, 0.6);
+}
+/* a glossy highlight across the top of the button */
+.cta-button::before {
+  content: '';
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 7%;
+  height: 34%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+/* a ring that pulses outward to draw the eye to the button */
+.cta-button::after {
+  content: '';
+  position: absolute;
+  inset: -0.1em;
+  border-radius: inherit;
+  border: 0.05em solid #fff;
+  pointer-events: none;
+  animation: ring 2.4s ease-out infinite;
+}
+@keyframes ring {
+  from { opacity: 0.9; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.14, 1.3); }
+}
+
+/* the handwritten instruction under the button */
+.cta-help {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.4rem;
+  max-width: 28rem;
+  margin: 0.1rem 0 0;
+  font-family: var(--font-note);
+  font-size: clamp(1.15rem, 2vw, 1.6rem);
+  line-height: 1.2;
+  color: var(--navy);
+}
+.cta-help strong { font-weight: 400; text-decoration: underline wavy var(--sky) 3px; text-underline-offset: 5px; }
+.cta-arrow { flex: none; width: clamp(40px, 4.6vw, 64px); margin-top: -0.5rem; }
+/* the arrow keeps redrawing itself */
+.arrow-line { stroke-dasharray: 220; animation: drawArrow 3.2s ease-in-out infinite; }
+@keyframes drawArrow {
+  0% { stroke-dashoffset: 220; }
+  35%, 88% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 0; }
+}
+
+/* the prompt at the bottom of the button screen */
+.scroll-note {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 3svh;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  font-family: var(--font-note);
+  font-size: clamp(1.1rem, 1.9vw, 1.5rem);
+  color: var(--navy);
+  text-align: center;
+  padding: 0 1rem;
+}
+.scroll-note-arrow { font-size: 1.6em; line-height: 0.8; animation: hop 1.4s ease-in-out infinite; }
+
+/* ====================== decorations on the sand ====================== */
+.deco { position: absolute; z-index: 1; pointer-events: none; }
+.deco svg { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 6px 4px rgba(120, 85, 35, 0.3)); }
+
+/* each kind of decoration has its own little idle animation */
+.deco-idle { transform-origin: 50% 90%; }
+.idle-crab { animation: scuttle 3.8s ease-in-out infinite; }
+@keyframes scuttle {
+  0%, 100% { transform: translateX(-22px) rotate(-3deg); }
+  25% { transform: translateX(-6px) rotate(2deg); }
+  50% { transform: translateX(22px) rotate(3deg); }
+  75% { transform: translateX(6px) rotate(-2deg); }
+}
+/* the claws snap open and shut */
+.idle-crab .claw-left { transform-origin: 46px 62px; animation: snapLeft 1.1s ease-in-out infinite; }
+.idle-crab .claw-right { transform-origin: 46px 62px; animation: snapLeft 1.1s ease-in-out infinite reverse; }
+@keyframes snapLeft {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-9deg); }
+}
+
+.idle-ball { animation: bounceBall 2.4s cubic-bezier(0.3, 0, 0.4, 1) infinite; }
+@keyframes bounceBall {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-34px) rotate(200deg); }
+}
+
+.idle-star { animation: twinkle 5s ease-in-out infinite; }
+@keyframes twinkle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(10deg) scale(1.08); }
+}
+
+.idle-umbrella { transform-origin: 50% 100%; animation: sway 6s ease-in-out infinite; }
+.idle-board { transform-origin: 50% 100%; animation: sway 5s ease-in-out infinite; animation-delay: -2s; }
+@keyframes sway {
+  0%, 100% { transform: rotate(-2.5deg); }
+  50% { transform: rotate(2.5deg); }
+}
+
+.idle-bucket { animation: sway 7s ease-in-out infinite; }
+.idle-towel { animation: ripple 5s ease-in-out infinite; }
+.idle-flipflops { animation: wobble 4s ease-in-out infinite; }
+@keyframes ripple {
+  0%, 100% { transform: skewX(0deg) rotate(0deg); }
+  50% { transform: skewX(-3deg) rotate(1.5deg); }
+}
+@keyframes wobble {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+.idle-castle .flag { transform-origin: 122px 18px; animation: flutter 0.9s ease-in-out infinite; }
+@keyframes flutter {
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50% { transform: skewY(-9deg) scaleX(0.88); }
+}
+
+/* ====================== the story (still on the sand) ====================== */
+.story {
+  position: relative;
+  z-index: 2;
+  overflow-x: clip; /* keeps the decorations from sticking out the sides */
+  overflow-y: visible; /* but lets the towel sit a bit higher, over the sand above */
+  min-height: 92vh;
+  min-height: 92svh;
+  background: var(--sand-noise), var(--sand-flat);
+  color: var(--navy);
+}
+
+/* no more scroll hold here: the content just scrolls normally */
+.story-pin {
+  position: relative;
+  z-index: 1; /* above the decorations */
+  min-height: 92vh;
+  min-height: 92svh;
+  display: grid;
+  grid-template-columns: 1.35fr 0.65fr;
+  gap: 4vw;
+  align-items: center;
+  padding: 7rem 8vw; /* the empty bands above and below the text are where the decorations sit */
+}
+
+.story-hand { margin-bottom: 0.7rem; /* breathing room above the heading */ font-size: clamp(1.2rem, 2vw, 1.6rem); color: var(--coral); transform: rotate(-2deg); display: inline-block; }
+.story-title {
+  margin: 0.1rem 0 1rem;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-size: clamp(2.2rem, min(5.2vw, 9svh), 4.4rem);
+  line-height: 1.05;
+  color: var(--navy);
+}
+.story-body {
+  max-width: 36em;
+  margin: 0;
+  font-size: clamp(0.97rem, min(1.56vw, 3.1svh), 1.33rem); /* slightly smaller */
+  font-weight: 700;
+  line-height: 1.55;
+  color: var(--deep);
+}
+.story-body p { margin: 0 0 0.85em; }
+.story-body p:last-child { margin-bottom: 0; }
+
+/* the postcard */
+.postcard {
+  justify-self: center;
+  width: min(100%, 310px);
+  margin: 0;
+  padding: 14px 14px 18px; /* polaroid: even frame around the picture, a bit more at the bottom */
+  border-radius: 6px;
+  background: #fffdf6;
+  box-shadow: 0 24px 46px rgba(120, 85, 35, 0.35);
+  transform: translateY(2.5rem) rotate(4deg); /* nudged down so it lines up with the middle of the text */
+  color: var(--navy);
+}
+.postcard-picture { position: relative; overflow: hidden; border-radius: 3px; }
+.postcard-picture svg { display: block; width: 100%; height: auto; }
+.postcard-stamp {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0.2rem 0.55rem;
+  border: 3px dashed var(--deep);
+  background: var(--sand);
+  color: var(--deep);
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  transform: rotate(6deg);
+}
+.postcard figcaption { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0.8rem 0.2rem 0.2rem; }
+.postcard-title { font-family: var(--font-note); font-size: clamp(1.3rem, 2.2vw, 1.7rem); line-height: 1.1; }
+.postcard-coords { font-size: 0.85rem; font-weight: 700; color: var(--muted); }
+
+/* ====================== the field guide prompt, on its own patch of ocean ====================== */
+.guide-ocean {
+  position: relative;
+  z-index: 2;
+  min-height: 170vh;
+  min-height: 170svh; /* extra height = the scroll hold while the surfer rides across */
+  color: #fff;
+  background: var(--deep-water);
+}
+.guide-bg { position: absolute; inset: 0; overflow: hidden; }
+
+/* the sand fades into water at the top... */
+.guide-fade-top {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 36vh;
+  height: 36svh;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--sand-flat) 0%, rgba(241, 225, 184, 0.92) 18%, rgba(241, 225, 184, 0.55) 50%, rgba(241, 225, 184, 0.18) 80%, rgba(241, 225, 184, 0) 100%);
+}
+/* the sand grain texture fades out together with the sand color, so there is no visible seam */
+.guide-fade-top::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--sand-noise);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.6) 40%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.6) 40%, transparent 100%);
+}
+/* ...and the water deepens at the bottom so the sand below can meet it with a clean wavy edge */
+.guide-fade-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30vh;
+  height: 30svh;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(10, 91, 149, 0), var(--deep-water) 100%);
+}
+
+.guide-pin {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12svh 6vw 5svh; /* room above and below the content */
+  text-align: center;
+}
+.prompt-hand { font-size: clamp(1.3rem, 2.2vw, 1.8rem); color: var(--sand); transform: rotate(-2deg); display: inline-block; text-shadow: 0 2px 8px rgba(5, 40, 75, 0.6); }
+/* the field guide prompt heading: the same script as the title, with almost no glow.
+   only the **starred** words in sitetext.js get a soft aqua glow. */
+.guide-heading {
+  max-width: min(16em, 94vw);
+  margin: 1.7rem auto 0.375em; /* heading sits closer so the paragraph centers between heading and button */
+  font-family: var(--font-title);
+  font-weight: var(--font-weight-title);
+  font-size: clamp(3.4rem, min(9.8vw, 16.5svh), 9.8rem);
+  line-height: 1.04;
+  letter-spacing: 0.07em; /* a bit more space between letters */
+  text-wrap: balance;
+  color: #fff;
+  /* glow over the whole heading: white core, aqua, then blue */
+  text-shadow: 0 0 0.03em rgba(255,255,255,0.8), 0 0 0.09em rgba(130,228,255,0.68), 0 0 0.21em rgba(60,195,255,0.58), 0 0 0.42em rgba(26,160,240,0.44), 0 0.03em 0.3em rgba(3,28,56,0.35);
+}
+.guide-heading strong {
+  font-weight: inherit;
+  color: #fff;
+  /* the starred words glow brightest */
+  text-shadow: 0 0 0.03em #fff, 0 0 0.08em rgba(255,255,255,0.85), 0 0 0.18em rgba(100,220,255,0.8), 0 0 0.36em rgba(40,180,250,0.68), 0 0 0.68em rgba(26,160,240,0.46), 0 0.03em 0.3em rgba(3,28,56,0.3);
+}
+.prompt-text { max-width: 36rem; margin: 0 auto 2.2rem; font-size: clamp(1.05rem, 1.8vw, 1.3rem); font-weight: 700; text-shadow: 0 2px 12px rgba(5, 40, 75, 0.6); }
+.prompt-button {
+  display: inline-block;
+  padding: 0.5em 1.1em 0.55em;
+  border: 0.07em solid var(--deep);
+  border-radius: 999px;
+  background: var(--sand);
+  color: var(--deep);
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-size: clamp(1.3rem, 3vw, 2.1rem);
+  text-decoration: none;
+  box-shadow: 0 0.1em 0 var(--deep), 0 1.2rem 2rem rgba(7, 47, 77, 0.25);
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+}
+.prompt-button:hover { background: var(--sand-light); }
+.prompt-button:active { transform: translateY(0.08em); box-shadow: 0 0.02em 0 var(--deep); }
+
+/* ---- the little surfer ---- */
+.surfer {
+  position: absolute;
+  left: 0;
+  bottom: 1vh;
+  bottom: 1svh; /* low on the screen, in open water below the button */
+  width: clamp(84px, 9vw, 134px);
+  animation: surfAcross 26s linear infinite; /* rides from the left edge to the right edge, over and over */
+  pointer-events: none;
+}
+.surfer-bob { animation: surfBob 2.2s ease-in-out infinite; transform-origin: 50% 80%; }
+.surfer svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* the bottom of the little wave fades into the sea instead of ending in a hard edge */
+  -webkit-mask-image: linear-gradient(180deg, #000 68%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 68%, transparent 100%);
+}
+@keyframes surfAcross {
+  from { transform: translateX(-16vw); }
+  to { transform: translateX(104vw); }
+}
+@keyframes surfBob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-9px) rotate(3deg); }
+}
+
+/* ====================== disclaimer (t&c): short, wide and low ====================== */
+.disclaimer-section {
+  position: relative;
+  z-index: 3;
+  padding: 5rem 6vw 1.6rem; /* the top padding leaves room for the wavy edge */
+  background: var(--sand-noise), var(--sand-flat);
+  color: var(--navy);
+}
+/* a wavy edge in the deep water color, so the ocean above meets the sand with a shoreline */
+.disclaimer-section::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1px;
+  height: 56px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 70' preserveAspectRatio='none'%3E%3Cpath d='M0 0 H600 V30 C500 70 400 70 300 30 C200 -10 100 -10 0 30 Z' fill='%230a5b95'/%3E%3C/svg%3E") repeat-x;
+  background-size: 600px 56px;
+  animation: disclaimerFlow 16s linear infinite;
+}
+@keyframes disclaimerFlow { to { background-position-x: 600px; } }
+
+/* three columns on a wide screen: heading | paragraph | paragraph */
+.terms-inner {
+  display: grid;
+  grid-template-columns: 0.8fr 1.1fr 1.1fr;
+  gap: 2.4rem;
+  align-items: start;
+  max-width: 80rem;
+  margin: 0 auto;
+}
+.terms-head { display: flex; align-items: center; gap: 0.7rem; }
+.disclaimer-icon { flex: none; color: var(--coral); }
+.terms-head h2 { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(1.4rem, 2.2vw, 1.9rem); line-height: 1.1; }
+.terms-inner p { margin: 0; font-size: 0.95rem; font-weight: 600; line-height: 1.5; }
+
+/* the fine print at the very bottom, in navy blue. two columns, low height */
+.fine-print {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.4rem;
+  padding: 0.8rem max(6vw, calc((100vw - 80rem) / 2)) 1rem;
+  background: var(--sand);
+  border-top: 2px solid rgba(11, 42, 92, 0.2);
+  color: var(--navy);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  text-align: left;
+}
+.fine-print p { margin: 0; }
+.fine-print a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
+/* ====================== phones and small screens ====================== */
+@media (max-width: 860px) {
+  .terms-inner { grid-template-columns: 1fr; gap: 0.8rem; }
+  .fine-print { grid-template-columns: 1fr; gap: 0.4rem; }
+}
+@media (max-width: 760px) {
+  .hide-small { display: none; }
+  /* on phones, move the big decorations out of the way of the text */
+  .castle-deco { bottom: 19% !important; left: 1% !important; width: 84px !important; }
+  .board-deco { top: 22% !important; right: 3% !important; width: 34px !important; }
+  .cta-center { padding-top: 22svh; }
+  .magnet { padding: 0.8rem 0.4rem; }
+  .story-pin { grid-template-columns: 1fr; align-content: center; gap: 1.2rem; padding: 6rem 7vw 7rem; }
+  .postcard { width: min(62%, 220px); }
+}
+
+/* ====================== sunbeams on the title screen ====================== */
+.hero-rays {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  pointer-events: none;
+}
+.ray {
+  position: absolute;
+  top: -25%;
+  width: 13vw;
+  height: 150%;
+  background: linear-gradient(180deg, rgba(190, 235, 255, 0.32), rgba(190, 235, 255, 0) 72%);
+  transform: rotate(18deg);
+  transform-origin: top;
+  filter: blur(9px);
+  mix-blend-mode: screen;
+  animation: rayPulse 8s ease-in-out infinite;
+}
+.ray-1 { left: 6%; }
+.ray-2 { left: 27%; width: 8vw; animation-delay: -2.5s; }
+.ray-3 { left: 50%; width: 15vw; animation-delay: -5s; }
+.ray-4 { left: 73%; width: 9vw; animation-delay: -1s; }
+@keyframes rayPulse {
+  0%, 100% { opacity: 0.35; transform: rotate(18deg) translateX(0); }
+  50% { opacity: 1; transform: rotate(15deg) translateX(2vw); }
+}
+
+/* ====================== bubbles ====================== */
+.bubbles { position: absolute; overflow: hidden; pointer-events: none; }
+/* only in the band where the sand fades into the water. they rise a short way, then pop before they reach the top. */
+.bubbles-guide { top: 0; left: 0; right: 0; height: 38vh; height: 38svh; --rise: 38svh; z-index: 1; }
+
+.bubble {
+  position: absolute;
+  bottom: -2rem; /* start just below the bottom of the band */
+  border-radius: 50%;
+  opacity: 0;
+  /* a soft white shine in one corner, a see-through middle and a bright rim, like a real bubble */
+  background: radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.95) 0 9%, rgba(255, 255, 255, 0.3) 14%, rgba(255, 255, 255, 0.08) 62%, rgba(255, 255, 255, 0.4) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  /* a faint blue glow so the bubbles still show up against the light sand */
+  box-shadow: inset 0 0 9px rgba(255, 255, 255, 0.6), 0 0 11px rgba(80, 170, 230, 0.55), 0 2px 6px rgba(7, 47, 77, 0.15);
+  animation: bubbleRise linear infinite;
+}
+/* appears, rises and wobbles for a few seconds, then pops (grows a little and fades) well before it leaves the band */
+@keyframes bubbleRise {
+  0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
+  10% { opacity: var(--alpha); }
+  45% { transform: translate(var(--sway), calc(var(--rise) * -0.45)) scale(1); }
+  70% { transform: translate(calc(var(--sway) * -1), calc(var(--rise) * -0.75)) scale(1); opacity: var(--alpha); }
+  100% { transform: translate(calc(var(--sway) * 0.5), calc(var(--rise) * -1)) scale(1.35); opacity: 0; }
+}
+
+/* short browser windows (under 700px tall): lift the scroll hint a little, so it keeps room below it */
+@media (max-height: 700px) {
+  .hero-scroll { top: 88vh; top: 88svh; }
+}
+
+/* the field guide prompt on short browser windows (under 760px tall): tighter gaps, so everything still fits with room around it */
+@media (max-height: 760px) {
+  .guide-pin { padding-top: 9svh; padding-bottom: 4svh; }
+  .guide-heading { margin: 1.4rem auto 1.5rem; }
+  .prompt-text { margin-bottom: 1.5rem; }
+  .guide-pin .magnet { padding-top: 0.4rem; padding-bottom: 0.4rem; }
+}
+
+
+/* the little "navigate site" note with a curly arrow, pointing up at the wave menu button (landing page only) */
+.nav-hint { position: absolute; top: 0; right: 0; z-index: 5; pointer-events: none; } /* just an anchor in the top right corner */
+
+/* a simple arrow: its tail is above the words and its tip stops just short of the wave button */
+.nav-hint .hint-arrow {
+  position: absolute;
+  top: 42px;
+  right: 68px;
+  width: 32px;
+  height: 43px; /* a little shorter than before */
+  overflow: visible;
+}
+/* the words, centered right under the tail of the arrow */
+.nav-hint .hint-text {
+  position: absolute;
+  top: 86px;
+  right: 22px;
+  width: 144px;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-note); /* same style as the line at the top of the title */
+  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+  line-height: 1.05;
+  color: var(--sand);
+  text-shadow: 0 2px 10px rgba(5, 40, 75, 0.7);
+}
+.nav-hint .hint-line { display: block; white-space: nowrap; }
+@media (max-width: 800px) { .nav-hint { display: none; } }
+
+/* the little scroll arrow: fixed at the bottom of the screen, softly fading in and out, gone once you scroll */
+.scroll-cue {
+  position: fixed;
+  left: 50%;
+  bottom: 1.2svh;
+  z-index: 60;
+  width: 28px;
+  height: 28px;
+  margin-left: -14px;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 6px rgba(5, 40, 75, 0.6));
+  animation: cueFade 2s ease-in-out infinite;
+  transition: opacity 0.35s;
+}
+.scroll-cue.gone { opacity: 0 !important; animation: none; visibility: hidden; transition: opacity 0.35s, visibility 0s 0.35s; }
+@keyframes cueFade {
+  0%, 100% { opacity: 0.1; transform: translateY(-4px); }
+  50% { opacity: 0.65; transform: translateY(4px); }
+}
+@media (prefers-reduced-motion: reduce) { .scroll-cue { animation: none; opacity: 0.5; } }

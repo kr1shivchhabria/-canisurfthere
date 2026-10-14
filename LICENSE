@@ -1,0 +1,13 @@
+Copyright (c) 2026 Krishiv Chhabria. All rights reserved.
+
+The CanISurfThere name, design, scoring method and calculated safety scores are the
+property of Krishiv Chhabria. No permission is granted to copy, modify, distribute or
+use this software for any other purpose without written permission, except that people
+who view this repository on GitHub may view and fork it as allowed by GitHub's Terms
+of Service.
+
+Third-party libraries and the underlying weather, wave, tide and alert data (Open-Meteo,
+NOAA, the National Weather Service) remain the property of their owners and are used
+under their own terms.
+
+Contact: krchhabria@ucsd.edu

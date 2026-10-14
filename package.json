@@ -1,0 +1,51 @@
+{
+  "name": "canisurfthere",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "CanISurfThere: a live surf safety meter for La Jolla and the most popular beaches in the USA (React + Node)",
+  "engines": {
+    "node": ">=18.11"
+  },
+  "scripts": {
+    "install-all": "npm install && npm install --prefix client",
+    "server": "node --watch server/index.js",
+    "client": "npm run dev --prefix client",
+    "dev": "concurrently -n server,client -c blue,cyan \"npm run server\" \"npm run client\"",
+    "build": "npm run build --prefix client",
+    "start": "node server/index.js",
+    "test:safety": "node server/test-safety.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  },
+  "author": {
+    "name": "Krishiv Chhabria",
+    "email": "krchhabria@ucsd.edu"
+  },
+  "license": "UNLICENSED",
+  "keywords": [
+    "surf",
+    "surfing",
+    "surf-report",
+    "ocean",
+    "waves",
+    "tides",
+    "react",
+    "express",
+    "vite",
+    "gsap"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YOUR-USERNAME/canisurfthere.git"
+  },
+  "homepage": "https://github.com/YOUR-USERNAME/canisurfthere#readme",
+  "bugs": {
+    "url": "https://github.com/YOUR-USERNAME/canisurfthere/issues"
+  }
+}

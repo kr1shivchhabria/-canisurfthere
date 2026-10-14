@@ -1,0 +1,108 @@
+/* nav.css: the small wave button and its menu (shown on every page) */
+
+.nav-menu { position: fixed; top: 1rem; right: 1rem; z-index: 200; }
+
+/* the round wave button: a little sky blue sticker, like the big button on the landing page */
+.nav-button {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 3px solid var(--deep);
+  border-radius: 50%;
+  background: linear-gradient(180deg, #6fcaf3 0%, #2290d6 100%);
+  box-shadow: 0 4px 0 var(--deep), 0 10px 20px rgba(7, 47, 77, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.nav-button:hover { transform: translateY(-2px) rotate(-6deg); }
+.nav-button:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--deep); }
+.nav-button svg { width: 28px; height: 28px; }
+
+/* the menu that opens under the button */
+.nav-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 270px;
+  padding: 0.5rem;
+  border: 3px solid var(--deep);
+  border-radius: 20px;
+  background: var(--sand-light);
+  box-shadow: 0 6px 0 var(--deep), 0 24px 40px rgba(7, 47, 77, 0.3);
+  transform-origin: top right;
+  animation: navPop 0.18s ease-out;
+}
+@keyframes navPop {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 14px;
+  color: var(--deep);
+  text-decoration: none;
+}
+.nav-link:hover { background: var(--sky-pale); }
+.nav-link.active { background: var(--sky); } /* the page you are on */
+
+.nav-num {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--deep);
+  color: var(--sand);
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-size: 0.9rem;
+}
+.nav-text { display: flex; flex-direction: column; font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; line-height: 1.15; }
+.nav-text small { font-family: var(--font-body); font-weight: 600; font-size: 0.78rem; color: var(--muted); }
+.nav-link.active .nav-text small { color: var(--deep); }
+
+/* make room for the menu button on pages that have something in the top right corner.
+   (this only nudges the field guide's "check the surf" link to the left. nothing else on that page changes) */
+.learn-nav { padding-right: calc(5vw + 4.4rem); }
+
+/* ====================== the top navigation bubbles (second style) ====================== */
+/* no bar and no background: just a few small bubbles centered at the top. not fixed, so they scroll away */
+:root { --nav-bar-height: 58px; }
+.nav-bar {
+  position: absolute;
+  top: 0.9rem;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  pointer-events: none; /* only the bubbles are clickable, not the empty space around them */
+}
+.nav-bar-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+.nav-bar-link {
+  pointer-events: auto;
+  padding: 0.35em 0.95em;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  background: rgba(7, 47, 77, 0.35); /* a faint tint so the words stay readable on any water */
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #fff;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.15s, background 0.15s;
+}
+.nav-bar-link:hover { transform: translateY(-2px); background: rgba(7, 47, 77, 0.6); }
+.nav-bar-link.active { background: var(--sand); border-color: var(--sand); color: var(--deep); } /* the page you are on */
+
+/* on the checker, leave room at the top for the bubbles (its own top bar then sticks as you scroll) */
+.has-nav-bar .check-page { padding-top: var(--nav-bar-height); }
+.has-nav-bar .topbar { padding-right: 5vw; }
